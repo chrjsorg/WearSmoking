@@ -138,7 +138,7 @@ public class SetupActivity extends Activity {
         }
 
         if (!editTextDate.getText().toString().isEmpty()) {
-            dateMillis = getMillisFromStringInput(editTextPricePerPackage.getText().toString());
+            dateMillis = getMillisFromStringInput(editTextDate.getText().toString());
         }
 
         if (cigsPerDay == 0 || cigsPerPackage == 0 || pricePerPackage == 0 || dateMillis == 0) {
