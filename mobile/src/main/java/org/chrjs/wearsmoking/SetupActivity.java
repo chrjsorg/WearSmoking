@@ -110,7 +110,10 @@ public class SetupActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_save) {
             if (save() == false) {
-                Toast.makeText(this, "Please check your typed in values", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);
