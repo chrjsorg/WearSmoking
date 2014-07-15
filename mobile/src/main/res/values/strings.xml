@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WearSmoking</string>
+    <string name="app_name">Stop Smoking! for Wear</string>
+    <string name="save">Save</string>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.wearable.view.CardFrame xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="@string/stop_smoking"
             android:paddingTop="3dp"
+            android:text="@string/stop_smoking"
             android:textAppearance="@style/Mediumtext" />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_below="@+id/textview_Time"
             android:paddingLeft="@dimen/textview_padding_left"
             android:paddingTop="10dp"
-            android:text="Avoided:"
+            android:text="@string/avoided"
             android:textAppearance="@style/Smalltext" />
 
         <TextView
@@ -58,7 +58,7 @@
             android:layout_below="@+id/textview_avoided"
             android:paddingLeft="@dimen/textview_padding_left"
             android:paddingTop="10dp"
-            android:text="Saved"
+            android:text="@string/saved"
             android:textAppearance="@style/Smalltext" />
 
         <TextView
@@ -68,7 +68,6 @@
             android:layout_above="@+id/textview_avoided"
             android:layout_toRightOf="@+id/textview_Time"
             android:paddingLeft="@dimen/padding_value_textview"
-            android:text="100d 12h"
             android:textAppearance="@style/Smalltext" />
 
         <TextView
@@ -79,7 +78,6 @@
             android:layout_alignBottom="@+id/textview_avoided"
             android:layout_toEndOf="@+id/textview_avoided"
             android:paddingLeft="@dimen/padding_value_textview"
-            android:text="500"
             android:textAppearance="@style/Smalltext" />
 
         <TextView
@@ -89,7 +87,6 @@
             android:layout_alignBottom="@+id/textview_saved"
             android:layout_toEndOf="@+id/textview_saved"
             android:paddingLeft="@dimen/padding_value_textview"
-            android:text="500€"
             android:textAppearance="@style/Smalltext" />
     </RelativeLayout>
 </android.support.wearable.view.CardFrame>
