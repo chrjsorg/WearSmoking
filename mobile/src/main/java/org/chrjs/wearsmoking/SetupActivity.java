@@ -109,7 +109,7 @@ public class SetupActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save) {
-            if (save()) {
+            if (save() == false) {
                 Toast.makeText(this, "Please check your typed in values", Toast.LENGTH_SHORT).show();
             }
         }
@@ -129,8 +129,8 @@ public class SetupActivity extends Activity {
             cigsPerDay = Integer.parseInt(editTextCigsPerDay.getText().toString());
         }
 
-        if (!editTextCigsPerDay.getText().toString().isEmpty()) {
-            cigsPerPackage = Integer.parseInt(editTextCigsPerDay.getText().toString());
+        if (!editTextCigsPerPackage.getText().toString().isEmpty()) {
+            cigsPerPackage = Integer.parseInt(editTextCigsPerPackage.getText().toString());
         }
 
         if (!editTextPricePerPackage.getText().toString().isEmpty()) {

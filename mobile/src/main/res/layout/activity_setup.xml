@@ -44,7 +44,8 @@
         android:layout_below="@+id/imageView"
         android:ems="10"
         android:inputType="date"
-        android:text="10.07.2014" />
+       />// android:text="10.07.2014"
+
 
     <TextView
         android:id="@+id/textView2"
@@ -68,7 +69,7 @@
         android:layout_below="@+id/textView2"
         android:ems="10"
         android:inputType="number"
-        android:text="20" />
+      />//  android:text="20" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -114,7 +115,7 @@
         android:layout_below="@+id/imageView4"
         android:ems="10"
         android:inputType="numberDecimal"
-        android:text="5" />
+       />// android:text="5" />
 
     <TextView
         android:id="@+id/textView5"
@@ -149,8 +150,7 @@
         android:layout_alignRight="@+id/edittext_ppp"
         android:layout_below="@+id/imageView5"
         android:ems="10"
-        android:inputType="number"
-        android:text="20" />
+        android:inputType="number"/>       //android:text="20" />
 
 
 </RelativeLayout>
