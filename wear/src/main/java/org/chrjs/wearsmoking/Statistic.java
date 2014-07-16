@@ -21,10 +21,10 @@ public class Statistic extends Activity {
     private TextView textViewSince;
     private TextView textViewSavedMoney;
 
-    public static final String PREF_DATE = "quitdate";
-    public static final String PREF_PRICE = "priceperpackage";
-    public static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
-    public static final String PREF_CIGSPERDAY = "cigsperday";
+    private static final String PREF_DATE = "quitdate";
+    private static final String PREF_PRICE = "priceperpackage";
+    private static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
+    private static final String PREF_CIGSPERDAY = "cigsperday";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

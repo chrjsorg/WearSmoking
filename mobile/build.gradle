@@ -8,7 +8,7 @@ android {
         applicationId "org.chrjs.wearsmoking"
         minSdkVersion 18
         targetSdkVersion 20
-        versionCode 3
+        versionCode 4
         versionName "1.0.1"
     }
     buildTypes {
