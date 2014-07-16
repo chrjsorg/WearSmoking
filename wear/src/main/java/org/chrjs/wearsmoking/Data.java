@@ -4,15 +4,6 @@ import java.util.Date;
 
 public class Data {
 
-    public Data(int cigsPerDay, int cigsPerPackage, float moneyPerPackage, long sinceDate) {
-        this.moneyPerPackage = moneyPerPackage;
-        this.sinceDate = new Date(sinceDate);
-        this.cigsPerDay = cigsPerDay;
-        this.cigsPerPackage = cigsPerPackage;
-
-        diff = GetDateDiff(this.sinceDate.getTime());
-    }
-
     private float moneyPerPackage;
     private int cigsPerPackage;
     private Date sinceDate;
@@ -20,22 +11,13 @@ public class Data {
 
     private DateDiff diff;
 
-    public static class DateDiff {
-        public long Hours;
-        public long Days;
-    }
+    public Data(int cigsPerDay, int cigsPerPackage, float moneyPerPackage, long sinceDate) {
+        this.moneyPerPackage = moneyPerPackage;
+        this.sinceDate = new Date(sinceDate);
+        this.cigsPerDay = cigsPerDay;
+        this.cigsPerPackage = cigsPerPackage;
 
-    public String getTimeSinceQuit() {
-        return diff.Days + "d, " + diff.Hours + "h";
-    }
-
-    public int getAvoidedCigs() {
-        return (int) ((diff.Days * this.cigsPerDay) + (diff.Hours * (this.cigsPerDay / 24)));
-    }
-
-    public int getSavedMoney() {
-        float hours = (diff.Days * 24) + diff.Hours;
-        return (int) ((this.moneyPerPackage / this.cigsPerPackage * this.cigsPerDay / 24) * hours);
+        diff = GetDateDiff(this.sinceDate.getTime());
     }
 
     private static DateDiff GetDateDiff(long timeStartMillis) {
@@ -51,5 +33,23 @@ public class Data {
             }
         }
         return dateDiff;
+    }
+
+    public String getTimeSinceQuit() {
+        return diff.Days + "d, " + diff.Hours + "h";
+    }
+
+    public int getAvoidedCigs() {
+        return (int) ((diff.Days * this.cigsPerDay) + (diff.Hours * (this.cigsPerDay / 24)));
+    }
+
+    public int getSavedMoney() {
+        float hours = (diff.Days * 24) + diff.Hours;
+        return (int) ((this.moneyPerPackage / this.cigsPerPackage * this.cigsPerDay / 24) * hours);
+    }
+
+    public static class DateDiff {
+        public long Hours;
+        public long Days;
     }
 }

@@ -27,19 +27,16 @@ import java.util.Date;
 
 public class SetupActivity extends Activity {
 
-    private EditText editTextDate;
-    private EditText editTextPricePerPackage;
-    private EditText editTextCigsPerDay;
-    private EditText editTextCigsPerPackage;
-
-    private boolean isDatePickerOpened;
-    private Calendar calendarInstance = Calendar.getInstance();
     private static final String PREF_FILE = "smokeFile";
     private static final String PREF_DATE = "quitdate";
     private static final String PREF_PRICE = "priceperpackage";
     private static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
     private static final String PREF_CIGSPERDAY = "cigsperday";
-
+    private EditText editTextDate;
+    private EditText editTextPricePerPackage;
+    private EditText editTextCigsPerDay;
+    private EditText editTextCigsPerPackage;
+    private boolean isDatePickerOpened;
     DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -52,6 +49,7 @@ public class SetupActivity extends Activity {
             updateDateTextView();
         }
     };
+    private Calendar calendarInstance = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +106,6 @@ public class SetupActivity extends Activity {
 
         if (!editTextPricePerPackage.getText().toString().isEmpty()) {
             pricePerPackage = Float.parseFloat(editTextPricePerPackage.getText().toString());
-
         }
 
         if (!editTextDate.getText().toString().isEmpty()) {

@@ -17,14 +17,13 @@ import java.text.NumberFormat;
 
 public class Statistic extends Activity {
 
-    private TextView textViewAvoided;
-    private TextView textViewSince;
-    private TextView textViewSavedMoney;
-
     private static final String PREF_DATE = "quitdate";
     private static final String PREF_PRICE = "priceperpackage";
     private static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
     private static final String PREF_CIGSPERDAY = "cigsperday";
+    private TextView textViewAvoided;
+    private TextView textViewSince;
+    private TextView textViewSavedMoney;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
