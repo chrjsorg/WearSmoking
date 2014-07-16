@@ -2,6 +2,7 @@ package org.chrjs.wearsmoking;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,24 +32,24 @@ public class SetupActivity extends Activity {
     private EditText editTextCigsPerDay;
     private EditText editTextCigsPerPackage;
 
-    private boolean datepickerOpen;
-    private Calendar myCalendar = Calendar.getInstance();
-    public static final String PREF_DATE = "quitdate";
-    public static final String PREF_PRICE = "priceperpackage";
-    public static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
-    public static final String PREF_CIGSPERDAY = "cigsperday";
+    private boolean isDatePickerOpened;
+    private Calendar calendarInstance = Calendar.getInstance();
+    private static final String PREF_FILE = "smokeFile";
+    private static final String PREF_DATE = "quitdate";
+    private static final String PREF_PRICE = "priceperpackage";
+    private static final String PREF_CIGSPERPACKAGE = "cigsperpackage";
+    private static final String PREF_CIGSPERDAY = "cigsperday";
 
-    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            datepickerOpen = false;
-            updateLabel();
+            calendarInstance.set(Calendar.YEAR, year);
+            calendarInstance.set(Calendar.MONTH, monthOfYear);
+            calendarInstance.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            isDatePickerOpened = false;
+            updateDateTextView();
         }
     };
 
@@ -56,72 +57,41 @@ public class SetupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
+        setViews();
+    }
 
-        editTextCigsPerDay = (EditText) findViewById(R.id.editText_smoke_per_day);
-        editTextCigsPerPackage = (EditText) findViewById(R.id.edittext_cpp);
-        editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
-        editTextDate = (EditText) findViewById(R.id.editText_quitdate);
-        editTextDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
-        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showDatePickerDialog();
-                }
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setViews();
+        readPreferences();
     }
 
     private void showDatePickerDialog() {
-        Logi.Debug("showDatePickerDialog, datepickerOpen=" + datepickerOpen);
-
-        if (datepickerOpen == true) {
+        if (isDatePickerOpened == true) {
             return;
         }
-        datepickerOpen = true;
-        DatePickerDialog dialog = new DatePickerDialog(this, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)
+        isDatePickerOpened = true;
+        DatePickerDialog dialog = new DatePickerDialog(this, onDateSetListener, calendarInstance
+                .get(Calendar.YEAR), calendarInstance.get(Calendar.MONTH),
+                calendarInstance.get(Calendar.DAY_OF_MONTH)
         );
-        dialog.getDatePicker().setMaxDate(myCalendar.getTimeInMillis());
+        dialog.getDatePicker().setMaxDate(calendarInstance.getTimeInMillis());
         dialog.show();
     }
 
-    private void updateLabel() {
+    private void updateDateTextView() {
         DateFormat df;
         df = android.text.format.DateFormat.getDateFormat(getApplicationContext()); // Gets system DF
-        editTextDate.setText(df.format(myCalendar.getTime())); // Returns a string formatted
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.setup, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_save) {
-            if (save() == false) {
-                Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-            }
-        }
-        return super.onOptionsItemSelected(item);
+        editTextDate.setText(df.format(calendarInstance.getTime())); // Returns a string formatted
     }
 
     private boolean save() {
         final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API).build();
+
+        SharedPreferences settings = getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
 
         int cigsPerDay = 0;
         int cigsPerPackage = 0;
@@ -138,6 +108,7 @@ public class SetupActivity extends Activity {
 
         if (!editTextPricePerPackage.getText().toString().isEmpty()) {
             pricePerPackage = Float.parseFloat(editTextPricePerPackage.getText().toString());
+
         }
 
         if (!editTextDate.getText().toString().isEmpty()) {
@@ -147,6 +118,12 @@ public class SetupActivity extends Activity {
         if (cigsPerDay == 0 || cigsPerPackage == 0 || pricePerPackage == 0 || dateMillis == 0) {
             return false;
         }
+
+        editor.putInt(PREF_CIGSPERDAY, cigsPerDay);
+        editor.putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
+        editor.putFloat(PREF_PRICE, pricePerPackage);
+        editor.putLong(PREF_DATE, dateMillis);
+        editor.commit();
 
         mGoogleApiClient.connect();
         PutDataMapRequest dataMap = PutDataMapRequest.create("/smoke");
@@ -167,6 +144,36 @@ public class SetupActivity extends Activity {
         return true;
     }
 
+    private void readPreferences() {
+        SharedPreferences settings = getSharedPreferences(PREF_FILE, 0);
+        int cigsPerDay = settings.getInt(PREF_CIGSPERDAY, -1);
+        int cigsPerPackage = settings.getInt(PREF_CIGSPERPACKAGE, -1);
+        float pricePerPackage = settings.getFloat(PREF_PRICE, -1f);
+        long dateMillis = settings.getLong(PREF_DATE, -1);
+
+        if (cigsPerDay != -1) {
+            editTextCigsPerDay.setText(String.valueOf(cigsPerDay));
+        }
+        if (cigsPerPackage != -1) {
+            editTextCigsPerPackage.setText(String.valueOf(cigsPerPackage));
+        }
+        if (pricePerPackage != -1f) {
+            editTextPricePerPackage.setText(String.valueOf(pricePerPackage));
+        }
+        if (dateMillis != -1) {
+            editTextDate.setText(getDateFromMillis(dateMillis));
+        }
+    }
+
+    private String getDateFromMillis(long millis) {
+        DateFormat df;
+        df = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        return df.format(calendar.getTime());
+    }
+
     private long getMillisFromStringInput(String input) {
         try {
             DateFormat df;
@@ -177,5 +184,46 @@ public class SetupActivity extends Activity {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void setViews() {
+        editTextCigsPerDay = (EditText) findViewById(R.id.editText_smoke_per_day);
+        editTextCigsPerPackage = (EditText) findViewById(R.id.edittext_cpp);
+        editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
+        editTextDate = (EditText) findViewById(R.id.editText_quitdate);
+
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePickerDialog();
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.setup, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_save) {
+            if (save() == false) {
+                Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
