@@ -38,3 +38,6 @@ build/
 # app.iml
 app/app.iml
 *.iml
+/playstoreres/*
+/playstoreres/
+
