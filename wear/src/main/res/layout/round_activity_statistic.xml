@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.CardFrame xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".Statistic"
+    tools:deviceIds="wear_round">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="14dp"
+        android:text="@string/stop_smoking"
+        android:textAppearance="@style/Mediumtext" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:text="Seriously, stop it."
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/subtitle"
+        android:paddingLeft="@dimen/textview_padding_left"
+        android:paddingTop="14dp"
+        android:text="@string/since"
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_avoided"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_Time"
+        android:paddingLeft="@dimen/textview_padding_left"
+        android:paddingTop="10dp"
+        android:text="@string/avoided"
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_saved"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_avoided"
+        android:paddingLeft="@dimen/textview_padding_left"
+        android:paddingTop="10dp"
+        android:text="@string/saved"
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_since_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textview_avoided"
+        android:layout_toRightOf="@+id/textview_Time"
+        android:paddingLeft="@dimen/padding_value_textview"
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_avoided_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textview_avoided"
+        android:layout_alignBottom="@+id/textview_avoided"
+        android:layout_toEndOf="@+id/textview_avoided"
+        android:paddingLeft="@dimen/padding_value_textview"
+        android:textAppearance="@style/Smalltext" />
+
+    <TextView
+        android:id="@+id/textview_saved_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textview_saved"
+        android:layout_toEndOf="@+id/textview_saved"
+        android:paddingLeft="@dimen/padding_value_textview"
+        android:textAppearance="@style/Smalltext" />
+    </RelativeLayout>
+
+</android.support.wearable.view.CardFrame>

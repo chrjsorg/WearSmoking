@@ -3,6 +3,7 @@ package org.chrjs.wearsmoking;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,11 +29,17 @@ public class Statistic extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rect_activity_statictic);
 
-        textViewAvoided = (TextView) findViewById(R.id.textview_avoided_value);
-        textViewSince = (TextView) findViewById(R.id.textview_since_value);
-        textViewSavedMoney = (TextView) findViewById(R.id.textview_saved_value);
+        setContentView(R.layout.activity_statistic);
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override
+            public void onLayoutInflated(WatchViewStub stub) {
+                textViewAvoided = (TextView) stub.findViewById(R.id.textview_avoided_value);
+                textViewSince = (TextView) stub.findViewById(R.id.textview_since_value);
+                textViewSavedMoney = (TextView) stub.findViewById(R.id.textview_saved_value);
+            }
+        });
     }
 
     @Override
