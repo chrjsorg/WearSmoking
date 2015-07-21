@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "org.chrjs.wearsmoking"
-        minSdkVersion 18
+        minSdkVersion 20
         targetSdkVersion 22
         versionCode 6
         versionName "1.0.4"
@@ -22,7 +22,8 @@ android {
 dependencies {
     compile 'org.codehaus.groovy:groovy-backports-compat23:2.3.5'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-   compile 'com.google.android.gms:play-services-wearable:+'
+    compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.android.support:support-v4:22.+'
+    compile 'com.android.support:design:22.2.0'
     wearApp project(':wear')
 }

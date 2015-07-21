@@ -32,13 +32,10 @@ public class Statistic extends Activity {
 
         setContentView(R.layout.activity_statistic);
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                textViewAvoided = (TextView) stub.findViewById(R.id.textview_avoided_value);
-                textViewSince = (TextView) stub.findViewById(R.id.textview_since_value);
-                textViewSavedMoney = (TextView) stub.findViewById(R.id.textview_saved_value);
-            }
+        stub.setOnLayoutInflatedListener(stub1 -> {
+            textViewAvoided = (TextView) stub1.findViewById(R.id.textview_avoided_value);
+            textViewSince = (TextView) stub1.findViewById(R.id.textview_since_value);
+            textViewSavedMoney = (TextView) stub1.findViewById(R.id.textview_saved_value);
         });
     }
 
@@ -53,28 +50,25 @@ public class Statistic extends Activity {
         mGoogleApiClient.connect();
 
         PendingResult<DataItemBuffer> results = Wearable.DataApi.getDataItems(mGoogleApiClient);
-        results.setResultCallback(new ResultCallback<DataItemBuffer>() {
-            @Override
-            public void onResult(DataItemBuffer dataItems) {
-                if (dataItems.getCount() != 0) {
-                    DataMap dataMap = DataMapItem.fromDataItem(dataItems.get(0)).getDataMap();
+        results.setResultCallback(dataItems -> {
+            if (dataItems.getCount() != 0) {
+                DataMap dataMap = DataMapItem.fromDataItem(dataItems.get(0)).getDataMap();
 
-                    int cigsPerPackage = dataMap.getInt(PREF_CIGSPERPACKAGE, -1);
-                    long date = dataMap.getLong(PREF_DATE, -1);
-                    float savedMoney = dataMap.getFloat(PREF_PRICE, -1);
-                    int cigsPerDay = dataMap.getInt(PREF_CIGSPERDAY, -1);
+                int cigsPerPackage = dataMap.getInt(PREF_CIGSPERPACKAGE, -1);
+                long date = dataMap.getLong(PREF_DATE, -1);
+                float savedMoney = dataMap.getFloat(PREF_PRICE, -1);
+                int cigsPerDay = dataMap.getInt(PREF_CIGSPERDAY,-1);
 
-                    if (cigsPerDay == 0 || date == 0 || savedMoney == 0 || cigsPerDay == 0) {
-                        raiseError();
-                    } else {
-                        setValues(new Data(cigsPerDay, cigsPerPackage, savedMoney, date));
-                    }
-                } else {
+                if (cigsPerDay == -1 || date == -1 || savedMoney == -1 || cigsPerPackage == -1 ) {
                     raiseError();
+                } else {
+                    setValues(new Data(cigsPerDay, cigsPerPackage, savedMoney, date));
                 }
-                dataItems.release();
-                mGoogleApiClient.disconnect();
+            } else {
+                raiseError();
             }
+            dataItems.release();
+            mGoogleApiClient.disconnect();
         });
     }
 
