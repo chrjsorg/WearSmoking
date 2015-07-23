@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Stop Smoking! for Wear</string>
     <string name="save">Save</string>
-    <string name="cigs_per_package">Cigarettes per package?</string>
-    <string name="cigs_per_day">Cigarettes per day?</string>
-    <string name="quit_date">Quit date?</string>
-    <string name="price_per_package">Price per package?</string>
+    <string name="cigs_per_package">Cigarettes per package</string>
+    <string name="cigs_per_day">Cigarettes per day</string>
+    <string name="quit_date">Quit date</string>
+    <string name="price_per_package">Price per package</string>
 </resources>
