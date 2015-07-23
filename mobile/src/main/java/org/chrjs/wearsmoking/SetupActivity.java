@@ -117,6 +117,11 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void save() {
+        editTextCigsPerDay.clearFocus();
+        editTextCigsPerPackage.clearFocus();
+        editTextDate.clearFocus();
+        editTextPricePerPackage.clearFocus();
+
         final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API).build();
 
@@ -172,7 +177,6 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
         showSnackbar(true);
-        return;
     }
 
     private void readPreferences() {
