@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class Data {
 
-    private float moneyPerPackage;
-    private int cigsPerPackage;
-    private Date sinceDate;
-    private int cigsPerDay;
+    private final float moneyPerPackage;
+    private final int cigsPerPackage;
+    private final Date sinceDate;
+    private final int cigsPerDay;
 
-    private DateDiff diff;
+    private final DateDiff diff;
 
     public Data(int cigsPerDay, int cigsPerPackage, float moneyPerPackage, long sinceDate) {
         this.moneyPerPackage = moneyPerPackage;

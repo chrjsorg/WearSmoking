@@ -1,15 +1,16 @@
 package org.chrjs.wearsmoking;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -24,8 +25,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class SetupActivity extends Activity {
+public class SetupActivity extends AppCompatActivity {
 
     private static final String PREF_FILE = "smokeFile";
     private static final String PREF_DATE = "quitdate";
@@ -37,7 +37,7 @@ public class SetupActivity extends Activity {
     private EditText editTextCigsPerDay;
     private EditText editTextCigsPerPackage;
     private boolean isDatePickerOpened;
-    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+    private final DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -47,9 +47,10 @@ public class SetupActivity extends Activity {
             calendarInstance.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             isDatePickerOpened = false;
             updateDateTextView();
+            editTextDate.clearFocus();
         }
     };
-    private Calendar calendarInstance = Calendar.getInstance();
+    private final Calendar calendarInstance = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class SetupActivity extends Activity {
     }
 
     private void showDatePickerDialog() {
-        if (isDatePickerOpened == true) {
+        if (isDatePickerOpened) {
             return;
         }
         isDatePickerOpened = true;
@@ -74,7 +75,17 @@ public class SetupActivity extends Activity {
                 .get(Calendar.YEAR), calendarInstance.get(Calendar.MONTH),
                 calendarInstance.get(Calendar.DAY_OF_MONTH)
         );
-        dialog.getDatePicker().setMaxDate(calendarInstance.getTimeInMillis());
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                isDatePickerOpened = false;
+                editTextDate.clearFocus();
+            }
+        });
+        //Use new instance every time so the max date is always "now", not some previous saved date
+        Calendar c = Calendar.getInstance();
+        dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
         dialog.show();
     }
 
@@ -84,7 +95,28 @@ public class SetupActivity extends Activity {
         editTextDate.setText(df.format(calendarInstance.getTime())); // Returns a string formatted
     }
 
-    private boolean save() {
+    private void showSnackbar(boolean success) {
+        String text;
+
+        if (success) {
+            View.OnClickListener ocl;
+            text = getString(R.string.save_successful);
+            ocl = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            };
+
+            Snackbar.make(findViewById(R.id.rootView), text, Snackbar.LENGTH_SHORT)
+                    .setAction("Close", ocl).show();
+        } else {
+            text = getString(R.string.save_failed);
+            Snackbar.make(findViewById(R.id.rootView), text, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private void save() {
         final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API).build();
 
@@ -113,14 +145,15 @@ public class SetupActivity extends Activity {
         }
 
         if (cigsPerDay == 0 || cigsPerPackage == 0 || pricePerPackage == 0 || dateMillis == 0) {
-            return false;
+            showSnackbar(false);
+            return;
         }
 
         editor.putInt(PREF_CIGSPERDAY, cigsPerDay);
         editor.putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
         editor.putFloat(PREF_PRICE, pricePerPackage);
         editor.putLong(PREF_DATE, dateMillis);
-        editor.commit();
+        editor.apply();
 
         mGoogleApiClient.connect();
         PutDataMapRequest dataMap = PutDataMapRequest.create("/smoke");
@@ -138,7 +171,8 @@ public class SetupActivity extends Activity {
                 mGoogleApiClient.disconnect();
             }
         });
-        return true;
+        showSnackbar(true);
+        return;
     }
 
     private void readPreferences() {
@@ -184,6 +218,17 @@ public class SetupActivity extends Activity {
     }
 
     private void setViews() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
+
         editTextCigsPerDay = (EditText) findViewById(R.id.editText_smoke_per_day);
         editTextCigsPerPackage = (EditText) findViewById(R.id.edittext_cpp);
         editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
@@ -203,24 +248,5 @@ public class SetupActivity extends Activity {
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.setup, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_save) {
-            if (save() == false) {
-                Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-            }
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
