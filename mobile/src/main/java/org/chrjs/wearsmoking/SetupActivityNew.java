@@ -1,6 +1,7 @@
 package org.chrjs.wearsmoking;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -46,6 +47,7 @@ public class SetupActivityNew extends AppCompatActivity {
             calendarInstance.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             isDatePickerOpened = false;
             updateDateTextView();
+            editTextDate.clearFocus();
         }
     };
     private Calendar calendarInstance = Calendar.getInstance();
@@ -73,7 +75,17 @@ public class SetupActivityNew extends AppCompatActivity {
                 .get(Calendar.YEAR), calendarInstance.get(Calendar.MONTH),
                 calendarInstance.get(Calendar.DAY_OF_MONTH)
         );
-        dialog.getDatePicker().setMaxDate(calendarInstance.getTimeInMillis());
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                isDatePickerOpened = false;
+                editTextDate.clearFocus();
+            }
+        });
+        //Use new instance every time so the max date is always "now", not some previous saved date
+        Calendar c = Calendar.getInstance();
+        dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
         dialog.show();
     }
 
@@ -105,7 +117,6 @@ public class SetupActivityNew extends AppCompatActivity {
     }
 
     private boolean save() {
-
         final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API).build();
 
