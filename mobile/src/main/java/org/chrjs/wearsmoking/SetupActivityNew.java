@@ -66,7 +66,7 @@ public class SetupActivityNew extends Activity {
     }
 
     private void showDatePickerDialog() {
-        if (isDatePickerOpened) {
+        if (isDatePickerOpened == true) {
             return;
         }
         isDatePickerOpened = true;
@@ -120,7 +120,7 @@ public class SetupActivityNew extends Activity {
         editor.putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
         editor.putFloat(PREF_PRICE, pricePerPackage);
         editor.putLong(PREF_DATE, dateMillis);
-        editor.apply();
+        editor.commit();
 
         mGoogleApiClient.connect();
         PutDataMapRequest dataMap = PutDataMapRequest.create("/smoke");
@@ -132,7 +132,12 @@ public class SetupActivityNew extends Activity {
         PutDataRequest request = dataMap.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
                 .putDataItem(mGoogleApiClient, request);
-        pendingResult.setResultCallback(dataItemResult -> mGoogleApiClient.disconnect());
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(DataApi.DataItemResult dataItemResult) {
+                mGoogleApiClient.disconnect();
+            }
+        });
         return true;
     }
 
@@ -184,10 +189,18 @@ public class SetupActivityNew extends Activity {
         editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
         editTextDate = (EditText) findViewById(R.id.editText_quitdate);
 
-        editTextDate.setOnClickListener(v -> showDatePickerDialog());
-        editTextDate.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 showDatePickerDialog();
+            }
+        });
+        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePickerDialog();
+                }
             }
         });
     }
@@ -202,7 +215,7 @@ public class SetupActivityNew extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save) {
-            if (!save()) {
+            if (save() == false) {
                 Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
