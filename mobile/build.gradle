@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "org.chrjs.wearsmoking"
-        minSdkVersion 20
+        minSdkVersion 18
         targetSdkVersion 22
         versionCode 7
         versionName "1.0.5"
