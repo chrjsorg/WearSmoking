@@ -6,4 +6,6 @@
     <string name="cigs_per_day">Cigarettes per day</string>
     <string name="quit_date">Quit date</string>
     <string name="price_per_package">Price per package</string>
+    <string name="save_successful">Settings saved</string>
+    <string name="save_failed">Required input missing</string>
 </resources>

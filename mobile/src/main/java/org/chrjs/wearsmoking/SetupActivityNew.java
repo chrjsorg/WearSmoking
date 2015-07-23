@@ -1,21 +1,15 @@
 package org.chrjs.wearsmoking;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -30,8 +24,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class SetupActivityNew extends AppCompatActivity implements View.OnClickListener {
+public class SetupActivityNew extends AppCompatActivity {
 
     private static final String PREF_FILE = "smokeFile";
     private static final String PREF_DATE = "quitdate";
@@ -56,8 +49,6 @@ public class SetupActivityNew extends AppCompatActivity implements View.OnClickL
         }
     };
     private Calendar calendarInstance = Calendar.getInstance();
-
-    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,69 +83,85 @@ public class SetupActivityNew extends AppCompatActivity implements View.OnClickL
         editTextDate.setText(df.format(calendarInstance.getTime())); // Returns a string formatted
     }
 
+    private void showSnackbar(boolean success) {
+        String text;
+
+        if (success) {
+            View.OnClickListener ocl;
+            text = getString(R.string.save_successful);
+            ocl = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            };
+
+            Snackbar.make(findViewById(R.id.rootView), text, Snackbar.LENGTH_SHORT)
+                    .setAction("Close", ocl).show();
+        } else {
+            text = getString(R.string.save_failed);
+            Snackbar.make(findViewById(R.id.rootView), text, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
     private boolean save() {
 
-        Snackbar
-                .make(findViewById(R.id.rootView),
-                        "This is Snackbar",
-                        Snackbar.LENGTH_LONG)
-                .setAction("Action", this)
-                .show();
-        return false;
-//        final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addApi(Wearable.API).build();
-//
-//        SharedPreferences settings = getSharedPreferences(PREF_FILE, MODE_PRIVATE);
-//        SharedPreferences.Editor editor = settings.edit();
-//
-//        int cigsPerDay = 0;
-//        int cigsPerPackage = 0;
-//        float pricePerPackage = 0;
-//        long dateMillis = 0;
-//
-//        if (!editTextCigsPerDay.getText().toString().isEmpty()) {
-//            cigsPerDay = Integer.parseInt(editTextCigsPerDay.getText().toString());
-//        }
-//
-//        if (!editTextCigsPerPackage.getText().toString().isEmpty()) {
-//            cigsPerPackage = Integer.parseInt(editTextCigsPerPackage.getText().toString());
-//        }
-//
-//        if (!editTextPricePerPackage.getText().toString().isEmpty()) {
-//            pricePerPackage = Float.parseFloat(editTextPricePerPackage.getText().toString());
-//        }
-//
-//        if (!editTextDate.getText().toString().isEmpty()) {
-//            dateMillis = getMillisFromStringInput(editTextDate.getText().toString());
-//        }
-//
-//        if (cigsPerDay == 0 || cigsPerPackage == 0 || pricePerPackage == 0 || dateMillis == 0) {
-//            return false;
-//        }
-//
-//        editor.putInt(PREF_CIGSPERDAY, cigsPerDay);
-//        editor.putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
-//        editor.putFloat(PREF_PRICE, pricePerPackage);
-//        editor.putLong(PREF_DATE, dateMillis);
-//        editor.apply();
-//
-//        mGoogleApiClient.connect();
-//        PutDataMapRequest dataMap = PutDataMapRequest.create("/smoke");
-//        dataMap.getDataMap().putInt(PREF_CIGSPERDAY, cigsPerDay);
-//        dataMap.getDataMap().putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
-//        dataMap.getDataMap().putLong(PREF_DATE, dateMillis);
-//        dataMap.getDataMap().putFloat(PREF_PRICE, pricePerPackage);
-//
-//        PutDataRequest request = dataMap.asPutDataRequest();
-//        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
-//                .putDataItem(mGoogleApiClient, request);
-//        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-//            @Override
-//            public void onResult(DataApi.DataItemResult dataItemResult) {
-//                mGoogleApiClient.disconnect();
-//            }
-//        });
-//        return true;
+        final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API).build();
+
+        SharedPreferences settings = getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        int cigsPerDay = 0;
+        int cigsPerPackage = 0;
+        float pricePerPackage = 0;
+        long dateMillis = 0;
+
+        if (!editTextCigsPerDay.getText().toString().isEmpty()) {
+            cigsPerDay = Integer.parseInt(editTextCigsPerDay.getText().toString());
+        }
+
+        if (!editTextCigsPerPackage.getText().toString().isEmpty()) {
+            cigsPerPackage = Integer.parseInt(editTextCigsPerPackage.getText().toString());
+        }
+
+        if (!editTextPricePerPackage.getText().toString().isEmpty()) {
+            pricePerPackage = Float.parseFloat(editTextPricePerPackage.getText().toString());
+        }
+
+        if (!editTextDate.getText().toString().isEmpty()) {
+            dateMillis = getMillisFromStringInput(editTextDate.getText().toString());
+        }
+
+        if (cigsPerDay == 0 || cigsPerPackage == 0 || pricePerPackage == 0 || dateMillis == 0) {
+            showSnackbar(false);
+            return false;
+        }
+
+        editor.putInt(PREF_CIGSPERDAY, cigsPerDay);
+        editor.putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
+        editor.putFloat(PREF_PRICE, pricePerPackage);
+        editor.putLong(PREF_DATE, dateMillis);
+        editor.apply();
+
+        mGoogleApiClient.connect();
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/smoke");
+        dataMap.getDataMap().putInt(PREF_CIGSPERDAY, cigsPerDay);
+        dataMap.getDataMap().putInt(PREF_CIGSPERPACKAGE, cigsPerPackage);
+        dataMap.getDataMap().putLong(PREF_DATE, dateMillis);
+        dataMap.getDataMap().putFloat(PREF_PRICE, pricePerPackage);
+
+        PutDataRequest request = dataMap.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                .putDataItem(mGoogleApiClient, request);
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(DataApi.DataItemResult dataItemResult) {
+                mGoogleApiClient.disconnect();
+            }
+        });
+        showSnackbar(true);
+        return true;
     }
 
     private void readPreferences() {
@@ -203,55 +210,32 @@ public class SetupActivityNew extends AppCompatActivity implements View.OnClickL
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
 
-//        editTextCigsPerDay = (EditText) findViewById(R.id.editText_smoke_per_day);
-//        editTextCigsPerPackage = (EditText) findViewById(R.id.edittext_cpp);
-//        editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
-//        editTextDate = (EditText) findViewById(R.id.editText_quitdate);
-//
-//        editTextDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showDatePickerDialog();
-//            }
-//        });
-//        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    showDatePickerDialog();
-//                }
-//            }
-//        });
+        editTextCigsPerDay = (EditText) findViewById(R.id.editText_smoke_per_day);
+        editTextCigsPerPackage = (EditText) findViewById(R.id.edittext_cpp);
+        editTextPricePerPackage = (EditText) findViewById(R.id.edittext_ppp);
+        editTextDate = (EditText) findViewById(R.id.editText_quitdate);
+
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePickerDialog();
+                }
+            }
+        });
     }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-
-        if (id == R.id.fab) {
-                        save();
-        }
-    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//      //  getMenuInflater().inflate(R.menu.setup, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_save) {
-//            if (!save()) {
-//                Toast.makeText(this, "Please check your typed in values.", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }

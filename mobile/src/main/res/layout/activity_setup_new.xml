@@ -13,12 +13,16 @@
         android:background="?attr/colorPrimary"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+    <LinearLayout
+        android:focusable="true" android:focusableInTouchMode="true"
+        android:layout_width="0px" android:layout_height="0px"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
         android:orientation="vertical">
-
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_quitdate"
@@ -27,6 +31,7 @@
             <EditText
                 android:id="@+id/editText_quitdate"
                 style="@style/DefEditText"
+                android:inputType="date"
                 android:hint="@string/quit_date" />
         </android.support.design.widget.TextInputLayout>
 
@@ -37,6 +42,7 @@
             <EditText
                 android:id="@+id/editText_smoke_per_day"
                 style="@style/DefEditText"
+                android:inputType="number"
                 android:hint="@string/cigs_per_day" />
         </android.support.design.widget.TextInputLayout>
 
@@ -47,6 +53,7 @@
             <EditText
                 android:id="@+id/edittext_cpp"
                 style="@style/DefEditText"
+                android:inputType="number"
                 android:hint="@string/cigs_per_package" />
         </android.support.design.widget.TextInputLayout>
 
@@ -57,6 +64,7 @@
             <EditText
                 android:id="@+id/edittext_ppp"
                 style="@style/DefEditText"
+                android:inputType="numberDecimal"
                 android:hint="@string/price_per_package" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
